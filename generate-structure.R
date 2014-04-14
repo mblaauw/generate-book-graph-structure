@@ -72,9 +72,22 @@ generateRandomBookStats <- function(n) {
   return(final_result)
 }
 
-generateSimilarity <- function(x, y) {
+generateSimilarity <- function(booklist) {
   
+  sourceList = booklist
+  targetList = booklist
   
+  for (i in 1:length(sourceList)) {
+    for (j in 1:length(targetList)) {
+      sourceList[i] 
+      targetList[j]
+      runif(1, 0.0000, 0.9400)
+      
+      # COMBINE RESULT AND BUILD OUTPUT SET
+    }
+  }
 }
 
-BOOKS = generateRandomBookStats(n=100)
+BOOKS = generateRandomBookStats(n=5)
+
+generateSimilarity(BOOKS$title)
