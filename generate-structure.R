@@ -2,10 +2,7 @@ PUBLISHERS = c('12 Provinciën','Allert de Lange','De Amsterdamsche Keurkamer','
 WRITERS = c('Bertus Aafjes','Han B. Aalberse *Johannes van Keulen*','Thomas van Aalten','Justa Abbing','Kader Abdolah *Hossein Sadjadi Ghaemmaghami Farahani*','Rogier van Aerde','Jan van Aken','Joseph Alberdingk Thijm','Albert Alberts','Arnold Aletrino','Jo van Ammers-Küller','Mark van Andel','Peter van Andel','Threes Anna *Threes Schreurs*','Milo Anstadt','René Appel','Saskia Appel','Jan Arends','Frank Martinus Arion','Armando *Herman Dirk van Dodeweerd*','Appie Baantjer','Inge Bak','Gerbrand Bakker','Johan Ballegeer','Steven Barends','Benno Barnard','Nicolaas Beets','Kees van Beijnum','Belcampo *Herman Pieter Schönfeld Wichers*','Abdelkader Benali','Arie van den Berg','Walter van den Berg','H.C. ten Berge','Marjan Berk','J. Bernlef *Hendrik Jan Marsman*','Hanna Bervoets','Adelheid van Beuningen','Huub Beurskens','Xander Michiel Beute','Martien Beversluis','Naima El Bezaz','Wim de Bie','Maarten Biesheuvel','Willem Bilderdijk','Alfred Birney','Anna Blaman','Jakobus Cornelis Bloem *J.C. Bloem*','Marion Bloem','Jan Blokker','Esther Blom','Herman Pieter de Boer','Jo Boer','Elle Gerrit Bolhuis','Godfried Bomans','Oscar van den Boogaard','Alex Boogers','Graa Boomsma','Johan de Boose','Ferdinand Bordewijk','F. van den Bosch','Iris Boter','Hafid Bouazza','Ina Boudier-Bakker','Mies Bouhuys','Roos Boum','Beitske Bouwman','Matthijs van Boxsel','Marian Boyer')
 
 
-
-
-MHmakeRandomString <- function(n=1, lenght=12)
-{
+MHmakeRandomString <- function(n=1, lenght=12) {
   randomString <- c(1:n)                  # initialize vector
   for (i in 1:n)
   {
@@ -15,16 +12,25 @@ MHmakeRandomString <- function(n=1, lenght=12)
   }
   return(randomString)
 }
-
-generateRandomBookStats <- function(n=1) {
+generateRandomBookStats <- function(n) {
   for (i in 1:n) {
+    
+    print(i)
     
     # book_title
     book_title = MHmakeRandomString(n=1, lenght=16)
     book_author = WRITERS[sample(1:length(WRITERS),1)]
     book_publisher = PUBLISHERS[sample(1:length(PUBLISHERS),1)]
     
+    # generate date
+    first <- as.POSIXct(strptime("2007/01/01", "%Y/%m/%d"))
+    last <- as.POSIXct(strptime("2014/05/01", "%Y/%m/%d"))
+    dt <- last-first
+
+    # Generate pub date
+    book_date <- first + (as.numeric(dt) * runif(1, 25e1, 75000))
     
+    # generate descriptive stats
     book_words = sample(10000:90000,1)
     book_letters = round(book_words / sample(1:12,1))
     book_sylables = round(book_words / sample(1:6,1))
@@ -42,16 +48,30 @@ generateRandomBookStats <- function(n=1) {
     book_l4 = runif(1, 2.0, 20.0)
     
     # rankin 
-    book_r1 = runif(1, 0.0, 10.0)
+    book_rank1 = runif(1, 0.0, 10.0)
     
-    
-    
+    result =    data.frame(book_title, book_author, book_publisher,
+                           book_words, book_letters, book_sylables,
+                           book_r1, book_r2, book_r3, book_r4,
+                           book_l1, book_l2, book_l3, book_l4,
+                           book_rank1)
+ 
+    # build output set   
+    if (exists("final_result") == T) {
+      final_result = rbind(final_result, result)
+    } else {
+      final_result = result
+    }
+
   }
+  names(final_result) = c('title', 'author','publisher',
+                          'words','letters','sylables',
+                          'r1','r2','r3','r4',
+                          'l1','l2','l3','l4',
+                          'rank')
+  
+  return(final_result)
 }
 
 
-
-
-BOOKS = MHmakeRandomString(n=100, lenght=16)
-
-BOOKS_STATS = 
+BOOKS = generateRandomBookStats(n=100)
