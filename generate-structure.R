@@ -11,6 +11,7 @@ MHmakeRandomString <- function(n=1, lenght=12) {
   }
   return(randomString)
 }
+
 generateRandomBookStats <- function(n) {
   for (i in 1:n) {
     
@@ -72,22 +73,29 @@ generateRandomBookStats <- function(n) {
   return(final_result)
 }
 
-generateSimilarity <- function(booklist) {
+generateSimilarity <- function(df_books) {
   
-  sourceList = booklist
-  targetList = booklist
+  sourceList = df_books
+  targetList = df_books
   
-  for (i in 1:length(sourceList)) {
-    for (j in 1:length(targetList)) {
-      sourceList[i] 
-      targetList[j]
-      runif(1, 0.0000, 0.9400)
-      
-      # COMBINE RESULT AND BUILD OUTPUT SET
+  df_result = data.frame(stringsAsFactors=FALSE, source='x', target='x', similar=0)
+  
+  for (i in 1:nrow(sourceList)) {
+    for (j in 1:nrow(targetList)) {
+      if (i != j) {
+        df_result[nrow(df_result)+1,] = c(as.character(sourceList[i,]), as.character(targetList[j,]), runif(1, 0.0000, 0.9400))
+        print (sourceList[i,])
+      }
     }
-  }
+  } 
+  # clean first row before return result
+  df_result = df_result[-1,]
+  
+  return(df_result)
 }
 
-BOOKS = generateRandomBookStats(n=5)
 
-generateSimilarity(BOOKS$title)
+BOOKS = generateRandomBookStats(n=50)
+BOOKS_SIM = generateSimilarity(data.frame(BOOKS$title))
+
+write.csv(BOOKS_SIM,file='book_similarity.csv')
